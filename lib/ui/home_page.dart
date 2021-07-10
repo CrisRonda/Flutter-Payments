@@ -5,6 +5,7 @@ import 'package:payments_app/bloc/paymet/payment_bloc.dart';
 import 'package:payments_app/domain/models/credit_card.dart';
 import 'package:payments_app/helpers/helpers.dart';
 import 'package:payments_app/services/credit_card_service.dart';
+import 'package:payments_app/services/stripe_service.dart';
 import 'package:payments_app/ui/card_page.dart';
 import 'package:payments_app/ui/widgets/payment_bottom.dart';
 
@@ -17,8 +18,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final _creditCardService = CreditCartService();
+    final stripeService = StripeService();
     final size = MediaQuery.of(context).size;
     final paymentBloc = BlocProvider.of<PaymentBloc>(context);
+    final paymentState = paymentBloc.state;
     final textStyle =
         Theme.of(context).textTheme.headline2!.copyWith(color: Colors.white);
     final AnimationController _controller = AnimationController(
@@ -43,7 +46,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           actions: [
             IconButton(
                 onPressed: () async {
-                  showAlert(context, "Error", "Nada nada mijin");
+                  showLoading(context);
+                  final resp = await stripeService.payWithNewCreditCard(
+                      amount: paymentState.toPay,
+                      currency: paymentState.currency);
+                  Navigator.pop(context);
+                  if (!resp.ok) {
+                    return showAlert(context, "Error", resp.messaje);
+                  }
+
+                  return showAlert(context, "Listo",
+                      "Pago de \$ ${paymentState.amount} exitoso");
                 },
                 icon: Icon(Icons.add))
           ],

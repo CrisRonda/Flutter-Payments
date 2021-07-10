@@ -8,10 +8,12 @@ class PaymentState {
   final CustomCreditCard? card;
 
   PaymentState(
-      {this.amount = 0,
-      this.currency = '',
+      {this.amount = 230,
+      this.currency = 'usd',
       this.isCardActive = false,
       this.card});
+
+  String get toPay => "${(this.amount * 100).floor()}";
 
   PaymentState copyWith({
     double? amount,

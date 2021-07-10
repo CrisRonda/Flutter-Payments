@@ -3,20 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:payments_app/bloc/paymet/payment_bloc.dart';
-import 'package:payments_app/domain/models/credit_card.dart';
 import 'package:payments_app/ui/widgets/payment_bottom.dart';
 
 class CardPage extends StatelessWidget {
-  final currentCard = CustomCreditCard(
-      cardNumberHidden: '4242',
-      cardNumber: '4242424242424242',
-      brand: 'visa',
-      cvv: '213',
-      expiracyDate: '01/25',
-      cardHolderName: 'Fernando Herrera');
   @override
   Widget build(BuildContext context) {
     final paymentBloc = BlocProvider.of<PaymentBloc>(context);
+    final currentCard = paymentBloc.state.card;
     final theme = Theme.of(context);
     return WillPopScope(
       onWillPop: () async {
@@ -57,7 +50,7 @@ class CardPage extends StatelessWidget {
         appBar: AppBar(
           actions: [],
           title: Text(
-            "Payment with  ${currentCard.brand.toUpperCase()}",
+            "Payment with  ${currentCard!.brand.toUpperCase()}",
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

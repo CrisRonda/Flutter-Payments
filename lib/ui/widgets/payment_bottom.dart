@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:payments_app/bloc/paymet/payment_bloc.dart';
+import 'package:payments_app/helpers/helpers.dart';
+import 'package:payments_app/services/stripe_service.dart';
+import 'package:stripe_payment/stripe_payment.dart';
 
 class PaymentBotton extends StatelessWidget {
   @override
@@ -38,7 +41,7 @@ class PaymentBotton extends StatelessWidget {
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "\$ 250",
+                    "\$ ${state.amount.toStringAsFixed(2)}",
                     style: TextStyle(
                         fontSize: 24,
                         color: Colors.white,
@@ -67,8 +70,26 @@ class _BtnPayment extends StatelessWidget {
   }
 
   Widget buildCreditCard(BuildContext context) {
+    final paymentState = BlocProvider.of<PaymentBloc>(context).state;
+    final card = paymentState.card;
+    final exp = card!.expiracyDate.split('/');
     return MaterialButton(
-        onPressed: () {},
+        onPressed: () async {
+          showLoading(context);
+          final stripeService = new StripeService();
+          final resp = await stripeService.payWithCreditCard(
+              amount: paymentState.toPay,
+              currency: paymentState.currency,
+              card: new CreditCard(
+                number: paymentState.card?.cardNumber,
+                expMonth: int.parse(exp[0]),
+                expYear: int.parse(exp[1]),
+              ));
+          Navigator.pop(context);
+          if (!resp.ok) {
+            return showAlert(context, "Error", resp.messaje);
+          } 
+        },
         minWidth: 170,
         height: 45,
         shape: StadiumBorder(),
