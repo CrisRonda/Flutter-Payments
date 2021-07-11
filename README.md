@@ -1,16 +1,40 @@
-# payments_app
+# Test Payments with Flutter 🐦
 
-A new Flutter project.
+I created this project for test Stripe API, Google Pay and Apple Pay.
 
-## Getting Started
+# You can
 
-This project is a starting point for a Flutter application.
+- Payment with credit cards
+- Payment with Google
+- Payment with Apple
 
-A few resources to get you started if this is your first Flutter project:
+# Concepts
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- Bloc
+- Stripe API
+- iOS & Android
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Screenshots
+
+## Payment with Apple Pay
+
+<img src="./screenshots/1.gif"
+     alt="IOS"
+     width="75%"/>
+<br/>
+
+## Payment with Google Pay
+
+<img src="./screenshots/a2.gif"
+     alt="IOS"
+     width="75%"/>
+<br/>
+
+## Payment with credit card
+
+<img src="./screenshots/2.gif"
+     alt="IOS"
+     width="49%"/>
+<img src="./screenshots/a1.gif"
+     alt="IOS"
+     width="49%"/>
