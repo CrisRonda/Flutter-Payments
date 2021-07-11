@@ -58,11 +58,32 @@ class StripeService {
     }
   }
 
-  Future payWithAppleAndroidService({
+  Future<StripeCustomResponse> payWithAppleAndroidService({
     required String amount,
     required String currency,
   }) async {
-    return;
+    try {
+      final fixAmount = (double.parse(amount) / 100).toStringAsFixed(2);
+      final token = await StripePayment.paymentRequestWithNativePay(
+          androidPayOptions: AndroidPayPaymentRequest(
+              currencyCode: currency, totalPrice: amount),
+          applePayOptions: ApplePayPaymentOptions(
+              countryCode: "us",
+              currencyCode: currency,
+              items: [
+                ApplePayItem(label: "Ejemplo de articulo", amount: fixAmount)
+              ]));
+      final paymentMethod = await StripePayment.createPaymentMethod(
+          PaymentMethodRequest(card: CreditCard(token: token.tokenId)));
+
+      final resp = await this._makePayment(
+          amount: amount, currency: currency, pmethod: paymentMethod);
+      await StripePayment.completeNativePayRequest();
+
+      return resp;
+    } catch (e) {
+      return StripeCustomResponse(ok: false, messaje: e.toString());
+    }
   }
 
   Future _makePayment({

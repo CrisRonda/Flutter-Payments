@@ -88,7 +88,8 @@ class _BtnPayment extends StatelessWidget {
           Navigator.pop(context);
           if (!resp.ok) {
             return showAlert(context, "Error", resp.messaje);
-          } 
+          }
+          Navigator.pushReplacementNamed(context, "success_pay");
         },
         minWidth: 170,
         height: 45,
@@ -118,8 +119,18 @@ class _BtnPayment extends StatelessWidget {
   }
 
   Widget buildAppleAndGooglePay(BuildContext context) {
+    final paymentState = BlocProvider.of<PaymentBloc>(context).state;
     return MaterialButton(
-        onPressed: () {},
+        onPressed: () async {
+          final stripeService = new StripeService();
+          final resp = await stripeService.payWithAppleAndroidService(
+              amount: paymentState.toPay, currency: paymentState.currency);
+
+          if (!resp.ok) {
+            return showAlert(context, "Error", resp.messaje);
+          }
+          Navigator.pushReplacementNamed(context, "success_pay");
+        },
         minWidth: 150,
         height: 45,
         shape: StadiumBorder(),
